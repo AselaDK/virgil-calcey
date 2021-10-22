@@ -4,7 +4,7 @@ import pywhatkit
 import datetime
 import wikipedia
 import pyjokes
-import requests
+import requests, json
 import pandas as pd
 from bs4 import BeautifulSoup
 import webbrowser
@@ -19,6 +19,27 @@ def talk(text):
     engine.say(text)
     engine.runAndWait()
 
+def createJiraTicket():
+    print("creating  jira ticket")
+    url = 'https://heybuddylive.atlassian.net/rest/api/2/issue/'
+    myobj = {
+    "fields": {
+       "project":
+       {
+          "key": "TP"
+       },
+       "summary": "thired REST ye merry gentleme.",
+       "description": "Creating of an issue using project keys and issue type names using the REST API",
+       "issuetype": {
+          "name": "Bug"
+            }
+        }
+    }
+    data = json.dumps(myobj).encode("utf-8")
+    headers = { "Authorization": "Basic a2F2aW5kdXh5ekBnbWFpbC5jb206NkVKampkbUV2SG9sd3pqWXZTdndBMDJD",
+    "Content-Type":"application/json"}
+    x = requests.post(url, data = data, headers=headers)
+    print(x.text)
 
 def take_command():
     try:
@@ -85,6 +106,10 @@ def run_alexa():
         talk('I am in a relationship with wifi')
     elif 'joke' in command:
         talk(pyjokes.get_joke())
+    elif 'ticket' in command:	
+        print("jira............")	
+        createJiraTicket()
+        talk("your jira ticket is created.")
     else:
         talk('Please say the command again.')
 
