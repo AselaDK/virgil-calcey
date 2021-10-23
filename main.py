@@ -19,7 +19,7 @@ def talk(text):
     engine.say(text)
     engine.runAndWait()
 
-def createJiraTicket():
+def createJiraTicket(summery, description):
     print("creating  jira ticket")
     url = 'https://heybuddylive.atlassian.net/rest/api/2/issue/'
     myobj = {
@@ -28,8 +28,8 @@ def createJiraTicket():
        {
           "key": "TP"
        },
-       "summary": "thired REST ye merry gentleme.",
-       "description": "Creating of an issue using project keys and issue type names using the REST API",
+       "summary": summery,
+       "description": description, #"Creating of an issue using project keys and issue type names using the REST API",
        "issuetype": {
           "name": "Bug"
             }
@@ -40,6 +40,7 @@ def createJiraTicket():
     "Content-Type":"application/json"}
     x = requests.post(url, data = data, headers=headers)
     print(x.text)
+    talk(x.text.key)
 
 def take_command():
     try:
@@ -53,7 +54,10 @@ def take_command():
                 print(command)
     except:
         pass
-    return command
+    if command is not None:
+        #found it, we are done
+        return command
+    return ' '
 
 # link for extract html data
 def getdata(url):
@@ -106,10 +110,14 @@ def run_alexa():
         talk('I am in a relationship with wifi')
     elif 'joke' in command:
         talk(pyjokes.get_joke())
-    elif 'ticket' in command:	
-        print("jira............")	
-        createJiraTicket()
-        talk("your jira ticket is created.")
+    elif 'create ticket' in command:	
+        summery = command.replace('create ticket', '')
+        print("jira............ " + summery)	
+        talk('what is the description to add?')
+        ticketDescription = take_command()
+        print(ticketDescription)
+        createJiraTicket(summery, ticketDescription)
+        talk("your jira ticket is created. ticket number ")
     else:
         talk('Please say the command again.')
 
