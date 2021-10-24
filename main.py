@@ -19,7 +19,7 @@ def talk(text):
     engine.say(text)
     engine.runAndWait()
 
-def createJiraTicket():
+def createJiraTicket(summary, description):
     print("creating  jira ticket")
     url = 'https://heybuddylive.atlassian.net/rest/api/2/issue/'
     myobj = {
@@ -28,8 +28,8 @@ def createJiraTicket():
        {
           "key": "TP"
        },
-       "summary": "thired REST ye merry gentleme.",
-       "description": "Creating of an issue using project keys and issue type names using the REST API",
+       "summary": summary,
+       "description": description,
        "issuetype": {
           "name": "Bug"
             }
@@ -51,9 +51,10 @@ def take_command():
             if 'alexa' in command:
                 command = command.replace('alexa', '')
                 print(command)
+            return command
     except:
+        print('Something went wrong. Please say the command again.')
         pass
-    return command
 
 # link for extract html data
 def getdata(url):
@@ -63,55 +64,65 @@ def getdata(url):
 def run_alexa():
     command = take_command()
     print(command)
-    if 'hr' in command:
-        link = "https://sites.google.com/calcey.com/calcey-hr/home"
-        # with urllib.request.urlopen(link) as f:
-        # # f = urllib.urlopen(link)
-        #     myfile = f.read()
-        #     print(myfile)
-        #     talk('Calcey HR')
-        #     talk(myfile)
-
-        # response = requests.get('http://hiscore.runescape.com/index_lite.ws?player=zezima')
-        # print (response.status_code)
-        # print (response.content)
-        # talk('Calcey HR')
-        # talk(response.content)
-
-        webbrowser.open(link)  # Go to hr site
-
-        htmldata = getdata(link)
-        soup = BeautifulSoup(htmldata, 'html.parser')
-        data = ''
-        talk('Calcey HR')
-        for data in soup.find_all("p"):
-            talk(data)
-            print(data.get_text())
-
-    elif 'play' in command:
-        song = command.replace('play', '')
-        talk('playing ' + song)
-        pywhatkit.playonyt(song)
-    elif 'time' in command:
-        time = datetime.datetime.now().strftime('%I:%M %p')
-        talk('Current time is ' + time)
-    elif 'who the heck is' in command:
-        person = command.replace('who the heck is', '')
-        info = wikipedia.summary(person, 1)
-        print(info)
-        talk(info)
-    elif 'date' in command:
-        talk('sorry, I have a headache')
-    elif 'are you single' in command:
-        talk('I am in a relationship with wifi')
-    elif 'joke' in command:
-        talk(pyjokes.get_joke())
-    elif 'ticket' in command:	
-        print("jira............")	
-        createJiraTicket()
-        talk("your jira ticket is created.")
+    if command is None:
+        print("No command")
+        command = take_command()
     else:
-        talk('Please say the command again.')
+        if 'hr' in command:
+            link = "https://sites.google.com/calcey.com/calcey-hr/home"
+            # with urllib.request.urlopen(link) as f:
+            # # f = urllib.urlopen(link)
+            #     myfile = f.read()
+            #     print(myfile)
+            #     talk('Calcey HR')
+            #     talk(myfile)
+
+            # response = requests.get('http://hiscore.runescape.com/index_lite.ws?player=zezima')
+            # print (response.status_code)
+            # print (response.content)
+            # talk('Calcey HR')
+            # talk(response.content)
+
+            webbrowser.open(link)  # Go to hr site
+
+            htmldata = getdata(link)
+            soup = BeautifulSoup(htmldata, 'html.parser')
+            data = ''
+            talk('Calcey HR')
+            for data in soup.find_all("p"):
+                talk(data)
+                print(data.get_text())
+
+        elif 'play' in command:
+            song = command.replace('play', '')
+            talk('playing ' + song)
+            pywhatkit.playonyt(song)
+        elif 'time' in command:
+            time = datetime.datetime.now().strftime('%I:%M %p')
+            talk('Current time is ' + time)
+        elif 'who the heck is' in command:
+            person = command.replace('who the heck is', '')
+            info = wikipedia.summary(person, 1)
+            print(info)
+            talk(info)
+        elif 'date' in command:
+            talk('sorry, I have a headache')
+        elif 'are you single' in command:
+            talk('I am in a relationship with wifi')
+        elif 'joke' in command:
+            talk(pyjokes.get_joke())
+        elif 'ticket' in command:	
+            print("jira ticket............")
+            talk('What is the summary of the bug, please write on console')
+            summeryinput = input()
+            talk(summeryinput)
+            talk('What is the description of the bug, please write on console')
+            descriptioninput = input()
+            talk(descriptioninput)
+            createJiraTicket(summeryinput, descriptioninput)
+            talk("your jira ticket is created.")
+        else:
+            talk('Please say the command again.')
 
 
 while True:
