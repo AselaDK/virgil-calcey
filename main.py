@@ -48,8 +48,8 @@ def take_command():
             voice = listener.listen(source)
             command = listener.recognize_google(voice)
             command = command.lower()
-            if 'alexa' in command:
-                command = command.replace('alexa', '')
+            if 'virgil' in command:
+                command = command.replace('virgil', '')
                 print(command)
             return command
     except:
@@ -61,7 +61,7 @@ def getdata(url):
     r = requests.get(url)
     return r.text
 
-def run_alexa():
+def run_virgil():
     command = take_command()
     print(command)
     if command is None:
@@ -70,28 +70,14 @@ def run_alexa():
     else:
         if 'hr' in command:
             link = "https://sites.google.com/calcey.com/calcey-hr/home"
-            # with urllib.request.urlopen(link) as f:
-            # # f = urllib.urlopen(link)
-            #     myfile = f.read()
-            #     print(myfile)
-            #     talk('Calcey HR')
-            #     talk(myfile)
-
-            # response = requests.get('http://hiscore.runescape.com/index_lite.ws?player=zezima')
-            # print (response.status_code)
-            # print (response.content)
-            # talk('Calcey HR')
-            # talk(response.content)
-
             webbrowser.open(link)  # Go to hr site
-
             htmldata = getdata(link)
             soup = BeautifulSoup(htmldata, 'html.parser')
             data = ''
             talk('Calcey HR')
-            for data in soup.find_all("p"):
-                talk(data)
-                print(data.get_text())
+            # for data in soup.find_all("p"):
+            #     talk(data)
+            #     print(data.get_text())
 
         elif 'play' in command:
             song = command.replace('play', '')
@@ -114,9 +100,11 @@ def run_alexa():
         elif 'ticket' in command:	
             print("jira ticket............")
             talk('What is the summary of the bug, please write on console')
+            print('summery: ')
             summeryinput = input()
             talk(summeryinput)
             talk('What is the description of the bug, please write on console')
+            print('descriptionbut 1: ')
             descriptioninput = input()
             talk(descriptioninput)
             createJiraTicket(summeryinput, descriptioninput)
@@ -126,4 +114,4 @@ def run_alexa():
 
 
 while True:
-    run_alexa()
+    run_virgil()
